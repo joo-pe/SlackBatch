@@ -1,0 +1,52 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /loan
+spring:
+  profiles:
+    active: local
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+
+---
+
+spring:
+  profiles: local
+  jpa:
+    #    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/slackpush?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=false&requireSSL=false&zeroDateTimeBehavior=convertToNull
+    username: teranet
+    password: tera1234!
+
+
+---
+
+spring:
+  profiles: dev
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://terafi-develop.cluster-cyzat0mkuyai.ap-northeast-2.rds.amazonaws.com:3306/trf-loan?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=true&requireSSL=true&zeroDateTimeBehavior=convertToNull
+    username: teradev
+    password: tera1234@
+
+
+
+
+---
