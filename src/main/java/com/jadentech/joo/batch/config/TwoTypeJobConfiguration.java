@@ -37,7 +37,7 @@ public class TwoTypeJobConfiguration {
     @Bean
     public CronTriggerFactoryBean topicHourPushJobCronTrigger() {
         CronTriggerFactoryBean cronTriggerFactoryBean = new CronTriggerFactoryBean();
-        cronTriggerFactoryBean.setCronExpression("20 * * * * ?"); // 분 시간 일 월 요
+        cronTriggerFactoryBean.setCronExpression("20 * * * * ?"); // 초 분 시간 일 월 요
         cronTriggerFactoryBean.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")));
         cronTriggerFactoryBean.setJobDetail(topicHourPushDateJobDetail().getObject());
         return cronTriggerFactoryBean;
@@ -66,29 +66,29 @@ public class TwoTypeJobConfiguration {
 
     @Bean
     public Step twoTypeSlackPushStep(){
-        JSONObject slackMsg = new JSONObject();
 
-        JSONObject field = new JSONObject();
-        JSONObject jsonObject = new JSONObject();
-
-        try{
-            field.put("ns-class", "title");
-
-            List<JSONObject> fields = Collections.singletonList(field);
-
-            slackMsg.put("ns-class", examService.getRandomExam());
-            jsonObject.put("fields", fields);
-        }catch(Exception e) {
-
-        }
-
-        HttepServiceClient
-                .request(INCOMING_WEBHOOK_URL, HttpMethod.POST, null, slackMsg.toString(), String.class)
-                .join();
-        log.info("#### This is twoTypeSlackPushStep" );
         return stepBuilderFactory.get(STEP_FIRST)
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("This is Step1");
+                    JSONObject slackMsg = new JSONObject();
+
+                    JSONObject field = new JSONObject();
+                    JSONObject jsonObject = new JSONObject();
+
+                    try{
+                        field.put("ns-class", "title");
+
+                        List<JSONObject> fields = Collections.singletonList(field);
+
+                        slackMsg.put("ns-class", examService.getRandomExam());
+                        jsonObject.put("fields", fields);
+                    }catch(Exception e) {
+
+                    }
+
+                    HttepServiceClient
+                            .request(INCOMING_WEBHOOK_URL, HttpMethod.POST, null, slackMsg.toString(), String.class)
+                            .join();
+                    log.info("#### This is twoTypeSlackPushStep" );
                     return RepeatStatus.FINISHED;
                 })
                 .build();
