@@ -30,7 +30,10 @@ public class Exam {
     private String objAttr;
 
     @Column(name = "problem" , columnDefinition = "text")
-    private String text;
+    private String problem;
+
+    @Column(name = "keyword" , columnDefinition = "text")
+    private String keyword;
 
 
 

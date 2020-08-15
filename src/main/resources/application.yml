@@ -17,7 +17,7 @@ feign:
 spring:
   profiles: local
   jpa:
-    #    show-sql: true
+    show-sql: true
     hibernate:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -30,6 +30,13 @@ spring:
     username: teranet
     password: tera1234!
 
+logging:
+  level:
+    org.springframework.batch: debug
+    org.hibernate: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type: debug
+    org.hibernate.type.descriptor.sql: debug
 
 ---
 
@@ -42,11 +49,17 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://terafi-develop.cluster-cyzat0mkuyai.ap-northeast-2.rds.amazonaws.com:3306/trf-loan?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=true&requireSSL=true&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://terafi-develop.cluster-cyzat0mkuyai.ap-northeast-2.rds.amazonaws.com:3306/slackpush?characterEncoding=UTF-8&serverTimezone=Asia/Seoul&useSSL=true&requireSSL=true&zeroDateTimeBehavior=convertToNull
     username: teradev
     password: tera1234@
 
-
+logging:
+  level:
+    org.springframework.batch: debug
+    #org.hibernate: debug
+    org.hibernate.SQL: debug
+    #org.hibernate.type: trace
+    #org.hibernate.type.descriptor.sql: trace
 
 
 ---

@@ -4,6 +4,7 @@ import com.jadentech.joo.batch.BatchJobExecutor;
 import com.jadentech.joo.batch.BatchJobListener;
 import com.jadentech.joo.business.common.ExamType;
 import com.jadentech.joo.business.common.client.HttepServiceClient;
+import com.jadentech.joo.business.service.ExamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONObject;
@@ -15,7 +16,6 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import com.jadentech.joo.business.service.ExamService;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 
@@ -25,34 +25,36 @@ import java.util.*;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class TwoTypeJobConfiguration {
+public class OneTypeJobConfiguration {
 
-    private static final String JOB_NAME = "twoTypeJob";
-    private static final String STEP_FIRST = "twoTypeDBSelectStep";
+    private static final String JOB_NAME = "oneTypeJob";
+    private static final String STEP_FIRST = "oneTypeDBSelectStep";
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final ExamService examService;
     private final BatchJobListener batchJobListener;
 
-    private static final String INCOMING_TWO_WEBHOOK_URL =
-            "https://hooks.slack.com/workflows/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";
+    private static final String INCOMING_ONE_WEBHOOK_URL =
+            "https://hooks.slack.com/workflows/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";
 
     @Bean
-    public CronTriggerFactoryBean topicHourPushJobCronTrigger() {
+    public CronTriggerFactoryBean topicOneTypePushJobCronTrigger() {
+
         CronTriggerFactoryBean cronTriggerFactoryBean = new CronTriggerFactoryBean();
-        //cronTriggerFactoryBean.setCronExpression("0 30 9-20 * * ?"); // 초 분 시간 일 월 요
-        cronTriggerFactoryBean.setCronExpression("20 * * * * ?");
+        //cronTriggerFactoryBean.setCronExpression("0 0 9-20 * * ?"); // 초 분 시간 일 월 요
+        cronTriggerFactoryBean.setCronExpression("10 * * * * ?");
         cronTriggerFactoryBean.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")));
-        cronTriggerFactoryBean.setJobDetail(topicHourPushDateJobDetail().getObject());
+        cronTriggerFactoryBean.setJobDetail(topicOneTypePushDateJobDetail().getObject());
+
         return cronTriggerFactoryBean;
     }
 
     @Bean
-    public JobDetailFactoryBean topicHourPushDateJobDetail(){
+    public JobDetailFactoryBean topicOneTypePushDateJobDetail() {
         JobDetailFactoryBean jobDetailFactoryBean = new JobDetailFactoryBean();
 
         Map<String, Object> jobDataAsMap = new HashMap<>();
-        jobDataAsMap.put("job", twoTypeSlackPushJob().getName());
+        jobDataAsMap.put("job", oneTypeSlackPushJob().getName());
 
         jobDetailFactoryBean.setJobDataAsMap(jobDataAsMap);
         jobDetailFactoryBean.setJobClass(BatchJobExecutor.class);
@@ -60,19 +62,17 @@ public class TwoTypeJobConfiguration {
     }
 
     @Bean
-    public Job twoTypeSlackPushJob() {
-        log.info("#### This is twoTypeSlackPushJob" );
-
+    public Job oneTypeSlackPushJob() {
+        log.info("#### This is oneTypeSlackPushJob" );
         return jobBuilderFactory.get(JOB_NAME)
                 .listener(batchJobListener)
                 //.preventRestart()
-                .start(twoTypeSlackPushStep())
+                .start(oneTypeSlackPushStep())
                 .build();
     }
 
     @Bean
-    public Step twoTypeSlackPushStep(){
-
+    public Step oneTypeSlackPushStep() {
         return stepBuilderFactory.get(STEP_FIRST)
                 .tasklet((contribution, chunkContext) -> {
                     JSONObject slackMsg = new JSONObject();
@@ -85,16 +85,20 @@ public class TwoTypeJobConfiguration {
 
                         List<JSONObject> fields = Collections.singletonList(field);
 
-                        slackMsg.put("ns-class", examService.getRandomExam(ExamType.TWO_TYPE));
+                        log.info("!!!! This is OneTypeSlackPushStep" );
+
+                        slackMsg.put("one-topic", examService.getRandomExam(ExamType.ONE_TYPE));
                         jsonObject.put("fields", fields);
 
-                        log.info("########### " + slackMsg.toString() + " ");
+
+                        log.info("!!!! " + slackMsg.toString() + " ");
+
                     }catch(Exception e) {
 
                     }
 
                     HttepServiceClient
-                            .request(INCOMING_TWO_WEBHOOK_URL, HttpMethod.POST, null, slackMsg.toString(), String.class)
+                            .request(INCOMING_ONE_WEBHOOK_URL, HttpMethod.POST, null, slackMsg.toString(), String.class)
                             .join();
 
                     return RepeatStatus.FINISHED;

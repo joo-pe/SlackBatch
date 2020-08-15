@@ -1,5 +1,6 @@
 package com.jadentech.joo.business.service;
 
+import com.jadentech.joo.business.common.ExamType;
 import com.jadentech.joo.business.domain.Exam;
 import com.jadentech.joo.business.repository.ExamRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +16,16 @@ public class ExamService {
 
     private final ExamRepository examRepository;
 
-    public String getRandomExam(){
+    public String getRandomExam(ExamType examType){
 
-        List<Exam> examList = examRepository.findAll();
+        List<Exam> examList = examRepository.findAllByGubun(examType.toString());
 
         double dValue = Math.random();
         double randomCount = dValue * examList.size();
+        int randomInt = Integer.parseInt(String.valueOf(Math.round(randomCount)));
 
-        Exam exam
-                = examRepository.findById(Integer.parseInt(String.valueOf(Math.round(randomCount)))).get();
+        Exam exam = examList.get(randomInt);
 
-        return exam.getText();
+        return exam.getProblem();
     }
 }
