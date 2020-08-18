@@ -41,7 +41,7 @@ public class TwoTypeJobConfiguration {
     public CronTriggerFactoryBean topicHourPushJobCronTrigger() {
         CronTriggerFactoryBean cronTriggerFactoryBean = new CronTriggerFactoryBean();
         //cronTriggerFactoryBean.setCronExpression("0 30 9-20 * * ?"); // 초 분 시간 일 월 요
-        cronTriggerFactoryBean.setCronExpression("20 * * * * ?");
+        cronTriggerFactoryBean.setCronExpression("0 10 9,12,17 * * ?");
         cronTriggerFactoryBean.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")));
         cronTriggerFactoryBean.setJobDetail(topicHourPushDateJobDetail().getObject());
         return cronTriggerFactoryBean;

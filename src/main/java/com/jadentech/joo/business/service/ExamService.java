@@ -26,6 +26,13 @@ public class ExamService {
 
         Exam exam = examList.get(randomInt);
 
-        return exam.getProblem();
+        String returnTxt = null;
+
+        if(examType.toString().equals(ExamType.ONE_TYPE.toString())){
+            returnTxt = exam.getProblem() + " - " + exam.getKeyword();
+        }else {
+            returnTxt = exam.getProblem();
+        }
+        return returnTxt;
     }
 }
