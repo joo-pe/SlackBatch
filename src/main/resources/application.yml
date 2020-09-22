@@ -1,10 +1,10 @@
 server:
   port: 8082
   servlet:
-    context-path: /loan
+    context-path: /dev
 spring:
   profiles:
-    active: local
+    active: dev
 
 feign:
   client:

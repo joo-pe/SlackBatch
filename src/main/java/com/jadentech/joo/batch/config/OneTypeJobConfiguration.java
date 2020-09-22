@@ -42,7 +42,7 @@ public class OneTypeJobConfiguration {
 
         CronTriggerFactoryBean cronTriggerFactoryBean = new CronTriggerFactoryBean();
         //cronTriggerFactoryBean.setCronExpression("0 0 9-20 * * ?"); // 초 분 시간 일 월 요
-        cronTriggerFactoryBean.setCronExpression("0 0 9-18 * * ?");
+        cronTriggerFactoryBean.setCronExpression("0 0,30 9-18 * * 1-5");
         cronTriggerFactoryBean.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")));
         cronTriggerFactoryBean.setJobDetail(topicOneTypePushDateJobDetail().getObject());
 
